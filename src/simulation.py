@@ -35,20 +35,29 @@ class Simulation:
         car = Car(name, x, y, direction, commands, self.field)
         self.cars.append(car)
         self.car_positions[(x, y)] = car
-        print(f"Car {name} added successfully.")
-
+        
     def run_simulation(self):
+        """
+        This funtion runs the simulation of the cars moving
+        """
         step = 0
+        
         while True:
-            # Find cars that can move: not collided and have commands left
+
+            # Find cars that can still move - those not collided and still have commands left
             moving_cars = [car for car in self.cars if not car.has_collided and car.commands]
+
+            #no more moving cars, exit
             if not moving_cars:
                 break
+            
             step += 1
+            
             # Execute one command for each moving car
             for car in moving_cars:
                 command = car.commands.pop(0)
                 car.execute_command(command)
+            
             # Check for collisions
             position_to_cars = {}
             for car in self.cars:
@@ -56,6 +65,7 @@ class Simulation:
                 if pos not in position_to_cars:
                     position_to_cars[pos] = []
                 position_to_cars[pos].append(car)
+            
             # Mark collisions
             for pos, cars_at_pos in position_to_cars.items():
                 if len(cars_at_pos) > 1:
@@ -65,6 +75,7 @@ class Simulation:
                             car.collision_step = step
                             car.collision_position = pos
                             car.collision_with = [c.name for c in cars_at_pos if c != car]
+        
         # Print results
         for car in self.cars:
             if car.has_collided:
@@ -73,4 +84,3 @@ class Simulation:
                 print(f"- {car.name}, collides with {collided_with} at {pos_str} at step {car.collision_step}")
             else:
                 print(f"- {car.name}, ({car.x},{car.y}) {car.direction}")
-

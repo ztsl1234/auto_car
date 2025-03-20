@@ -19,7 +19,8 @@ def get_number(input_str:str):
     try:            
         return float(input_str)
     except ValueError:
-        return None
+        print("Please enter a number.")
+            
 
 def is_two_decimal_places(input_str):
     """
@@ -54,24 +55,9 @@ def get_date(input_str):
     except ValueError:
         return None
     
-def get_month_first_last_day(yyyymm:int):
-    """
-    Get the first and last day for a given month
+def math_round(num):
+    frac = num - math.floor(num)
+    if frac < 0.5:
+        return math.floor(num)
 
-    Args:
-        yyyymm (int): _description_
-    """
-    year=int(str(yyyymm)[:4])
-    month=int(str(yyyymm)[4:])
-
-    first_day=datetime.date(year,month,1)
-    last_day=datetime.date(year,month,calendar.monthrange(year,month)[1])    
-
-    return first_day,last_day
-
-# def math_round(num):
-#     frac = num - math.floor(num)
-#     if frac < 0.5:
-#         return math.floor(num)
-
-#     return math.ceil(num)
+    return math.ceil(num)

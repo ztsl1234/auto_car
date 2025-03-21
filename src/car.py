@@ -3,6 +3,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Car:
+    
+    available_directions=['N', 'E', 'S', 'W'] #index 0,1,2,3
+    available_commands=['L', 'R', 'F']
+    available_moves=[(0, 1), (1, 0), (0, -1), (-1, 0)] 
+
     def __init__(self, name, x, y, direction, commands, field):
         self.name = name
 
@@ -10,7 +15,9 @@ class Car:
         self.x = x
         self.y = y
 
-        self.direction_index = ['N', 'E', 'S', 'W'].index(direction)
+        #index of the direction in the list
+        self.direction_index = self.available_directions.index(direction)
+        
         self.commands = list(commands)
 
         self.field = field
@@ -23,25 +30,29 @@ class Car:
 
     @property
     def direction(self):
-        return ['N', 'E', 'S', 'W'][self.direction_index]
+        return self.available_directions[self.direction_index]
 
     def rotate_left(self):
         """
-        change the direction of the car
+        Turn car to the left
 
-        e.g. N rotate left becomes W
-        
+        e.g. N rotate left becomes W (index 0 -1 => -1%4 = -1 => last element => W)
+        W rotate left becomes S (index 3 - 1 => 2%4 = 2 => S)
+        S rotate left becomes E (index 2 - 1 => 1%4 = 1 => E)
+        E rotate left becomes N (index 1 - 1 => 0%4 = 0 => N)
         """
-        self.direction_index = (self.direction_index - 1) % 4
+        self.direction_index = (self.direction_index - 1) % len(self.available_directions)
 
     def rotate_right(self):
         """
-        change the direction of the car
+        Turn car to the right
 
-        e.g. N rotate right becomes E
-        
+        e.g. N rotate right becomes E (index 0 + 1 => 1%4 =1 => E)
+        E rotate right becomes S (index 1 + 1 => 2%4 = 2=> S)
+        S rotate right becomes W (index 2 + 1 => 3%4 = 3 => W)
+        W rotate right becomes N (index 3 + 1 = 4%4 =0 => => N)
         """
-        self.direction_index = (self.direction_index + 1) % 4
+        self.direction_index = (self.direction_index + 1) % len(self.available_directions)
 
     def move_forward(self):
         """
@@ -49,7 +60,8 @@ class Car:
         and check if still within the field
         """
 
-        dx, dy = [(0, 1), (1, 0), (0, -1), (-1, 0)][self.direction_index]
+        #to move forward 1 step for each direction
+        dx, dy = self.available_moves[self.direction_index]
 
         new_x = self.x + dx
         new_y = self.y + dy
@@ -72,4 +84,3 @@ class Car:
             self.rotate_right()
         elif command == 'F':
             self.move_forward()
-

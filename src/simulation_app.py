@@ -1,8 +1,11 @@
 import logging
 
 from utils import utils
-from simulation import Simulation
 from validation_error import ValidationError
+
+from simulation import Simulation
+from car import Car
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,22 +18,22 @@ class SimulationApp:
         
         while True:            
             print("\nWelcome to Auto Driving Car Simulation!")
-            loop_flag1=True
-            while loop_flag1:
+            field_loop=True
+            while field_loop:
                 #Setup Field
                 try:
                     width, height = map(int, input("\nPlease enter the width and height of the simulation field in x y format: ").split())
                     self.sim = Simulation(width, height)
                     print(f"\nYou have created a field of {width} x {height}.")
-                    loop_flag1=False #exit this loop
+                    field_loop=False #exit this loop
                 except ValueError:
                     print("Please enter two integers separated by a space.")
                 except (ValidationError) as e:
                     print(f"{str(e)}")                    
 
             #main menu
-            loop_flag2=True
-            while loop_flag2:                
+            menu_loop=True
+            while menu_loop:                
                 print("\nPlease choose from the following options:")
                 print("[1] Add a car to field")
                 print("[2] Run simulation")
@@ -43,7 +46,7 @@ class SimulationApp:
                     if not self.run_simulation():
                         return #exit program
                     else:
-                        loop_flag2=False #exit this loop
+                        menu_loop=False #exit this loop
                 else:
                     print("Invalid choice.")
 
@@ -69,7 +72,7 @@ class SimulationApp:
 
                 loop_flag=False #no error exit loop                            
             except (ValueError, IndexError):
-                print("Please enter two integers and a direction (N, S, W, E) separated by spaces.")
+                print(f"Please enter two integers and a direction {Car.available_directions} separated by spaces.")
             except (ValidationError) as e:
                 print(f"{str(e)}")                    
 
@@ -77,12 +80,13 @@ class SimulationApp:
         """
         This function allows user to run the simulation 
         """
-        
+        print("tsl1")
         print("\nYour current list of cars are:")
         for car in self.sim.cars:
             print(f"- {car.name}, ({car.x},{car.y}) {car.direction}, {''.join(car.commands)}")
-            print("\nAfter simulation, the result is:")
-            self.sim.run_simulation()
+        
+        print("\nAfter simulation, the result is:")
+        self.sim.run_simulation()
             
         loop_flag=True
         while loop_flag:
